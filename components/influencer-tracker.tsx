@@ -5,192 +5,159 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { Plus, Trash2, Eye, EyeOff, Youtube, Instagram, Linkedin, TrendingUp, Users, Clock } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Plus, Trash2, Instagram, Youtube, Twitter, TrendingUp, Users } from "lucide-react"
 
 interface TrackedInfluencer {
   id: string
-  handle: string
+  username: string
   platform: string
-  category: "influencer" | "competitor"
-  isActive: boolean
+  followers: string
+  engagement: string
+  status: "active" | "paused"
   lastUpdate: string
-  followers: number
-  engagementRate: number
-  recentPosts: number
+  sentiment: "positive" | "neutral" | "negative"
 }
 
 export function InfluencerTracker() {
-  const [trackedList, setTrackedList] = useState<TrackedInfluencer[]>([
+  const [trackedInfluencers, setTrackedInfluencers] = useState<TrackedInfluencer[]>([
     {
       id: "1",
-      handle: "@techguru",
-      platform: "youtube",
-      category: "influencer",
-      isActive: true,
+      username: "techguru",
+      platform: "instagram",
+      followers: "2.4M",
+      engagement: "8.2%",
+      status: "active",
       lastUpdate: "2 hours ago",
-      followers: 125000,
-      engagementRate: 4.2,
-      recentPosts: 3,
+      sentiment: "positive",
     },
     {
       id: "2",
-      handle: "@competitor_brand",
+      username: "fashionista",
       platform: "instagram",
-      category: "competitor",
-      isActive: true,
-      lastUpdate: "1 hour ago",
-      followers: 89000,
-      engagementRate: 3.8,
-      recentPosts: 5,
+      followers: "1.8M",
+      engagement: "6.7%",
+      status: "active",
+      lastUpdate: "4 hours ago",
+      sentiment: "positive",
     },
     {
       id: "3",
-      handle: "@industry_leader",
-      platform: "linkedin",
-      category: "competitor",
-      isActive: false,
+      username: "fitnessking",
+      platform: "youtube",
+      followers: "890K",
+      engagement: "12.1%",
+      status: "paused",
+      lastUpdate: "1 day ago",
+      sentiment: "neutral",
+    },
+    {
+      id: "4",
+      username: "foodieblogger",
+      platform: "instagram",
+      followers: "650K",
+      engagement: "9.3%",
+      status: "active",
       lastUpdate: "6 hours ago",
-      followers: 45000,
-      engagementRate: 2.1,
-      recentPosts: 1,
+      sentiment: "positive",
     },
   ])
 
-  const [newHandle, setNewHandle] = useState("")
-  const [newPlatform, setNewPlatform] = useState("")
-  const [newCategory, setNewCategory] = useState("")
+  const [newInfluencer, setNewInfluencer] = useState({ username: "", platform: "instagram" })
 
   const addInfluencer = () => {
-    if (newHandle && newPlatform && newCategory) {
-      const newInfluencer: TrackedInfluencer = {
+    if (newInfluencer.username.trim()) {
+      const newTracker: TrackedInfluencer = {
         id: Date.now().toString(),
-        handle: newHandle.startsWith("@") ? newHandle : `@${newHandle}`,
-        platform: newPlatform,
-        category: newCategory as "influencer" | "competitor",
-        isActive: true,
+        username: newInfluencer.username.trim(),
+        platform: newInfluencer.platform,
+        followers: "Loading...",
+        engagement: "Loading...",
+        status: "active",
         lastUpdate: "Just added",
-        followers: Math.floor(Math.random() * 100000) + 10000,
-        engagementRate: Math.round((Math.random() * 5 + 1) * 10) / 10,
-        recentPosts: Math.floor(Math.random() * 10) + 1,
+        sentiment: "neutral",
       }
-      setTrackedList([...trackedList, newInfluencer])
-      setNewHandle("")
-      setNewPlatform("")
-      setNewCategory("")
+      setTrackedInfluencers([...trackedInfluencers, newTracker])
+      setNewInfluencer({ username: "", platform: "instagram" })
     }
   }
 
   const removeInfluencer = (id: string) => {
-    setTrackedList(trackedList.filter((item) => item.id !== id))
+    setTrackedInfluencers(trackedInfluencers.filter((inf) => inf.id !== id))
   }
 
-  const toggleTracking = (id: string) => {
-    setTrackedList(trackedList.map((item) => (item.id === id ? { ...item, isActive: !item.isActive } : item)))
+  const toggleStatus = (id: string) => {
+    setTrackedInfluencers(
+      trackedInfluencers.map((inf) =>
+        inf.id === id ? { ...inf, status: inf.status === "active" ? "paused" : "active" } : inf,
+      ),
+    )
   }
 
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
-      case "youtube":
-        return <Youtube className="w-4 h-4 text-red-500" />
       case "instagram":
-        return <Instagram className="w-4 h-4 text-pink-500" />
-      case "linkedin":
-        return <Linkedin className="w-4 h-4 text-blue-500" />
+        return <Instagram className="w-4 h-4" />
+      case "youtube":
+        return <Youtube className="w-4 h-4" />
+      case "twitter":
+        return <Twitter className="w-4 h-4" />
       default:
-        return null
+        return <Instagram className="w-4 h-4" />
     }
   }
 
-  const formatNumber = (num: number) => {
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + "M"
-    if (num >= 1000) return (num / 1000).toFixed(1) + "K"
-    return num.toString()
+  const getSentimentColor = (sentiment: string) => {
+    switch (sentiment) {
+      case "positive":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+      case "negative":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+      default:
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+    }
   }
-
-  const activeInfluencers = trackedList.filter((item) => item.isActive && item.category === "influencer").length
-  const activeCompetitors = trackedList.filter((item) => item.isActive && item.category === "competitor").length
-  const totalPosts = trackedList.reduce((sum, item) => sum + item.recentPosts, 0)
 
   return (
     <div className="space-y-6">
-      {/* Header Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Users className="w-5 h-5 text-blue-500" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Active Influencers</p>
-                <p className="text-2xl font-bold">{activeInfluencers}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <TrendingUp className="w-5 h-5 text-purple-500" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Active Competitors</p>
-                <p className="text-2xl font-bold">{activeCompetitors}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Eye className="w-5 h-5 text-green-500" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Recent Posts</p>
-                <p className="text-2xl font-bold">{totalPosts}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Clock className="w-5 h-5 text-orange-500" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Next Brief</p>
-                <p className="text-2xl font-bold">18h</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold">Influencer Tracker</h2>
+          <p className="text-gray-600 dark:text-gray-300">Monitor your curated list of influencers across platforms</p>
+        </div>
+        <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+          {trackedInfluencers.filter((inf) => inf.status === "active").length} Active
+        </Badge>
       </div>
 
-      {/* Add New Tracker */}
+      {/* Add New Influencer */}
       <Card>
         <CardHeader>
-          <CardTitle>Add New Tracker</CardTitle>
+          <CardTitle className="flex items-center space-x-2">
+            <Plus className="w-5 h-5" />
+            <span>Add New Influencer</span>
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Input placeholder="@handle or username" value={newHandle} onChange={(e) => setNewHandle(e.target.value)} />
-            <Select value={newPlatform} onValueChange={setNewPlatform}>
-              <SelectTrigger>
-                <SelectValue placeholder="Platform" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="youtube">YouTube</SelectItem>
-                <SelectItem value="instagram">Instagram</SelectItem>
-                <SelectItem value="linkedin">LinkedIn</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={newCategory} onValueChange={setNewCategory}>
-              <SelectTrigger>
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="influencer">Influencer</SelectItem>
-                <SelectItem value="competitor">Competitor</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button onClick={addInfluencer} className="w-full">
+          <div className="flex space-x-4">
+            <Input
+              placeholder="Enter username (e.g., techguru)"
+              value={newInfluencer.username}
+              onChange={(e) => setNewInfluencer({ ...newInfluencer, username: e.target.value })}
+              className="flex-1"
+            />
+            <select
+              value={newInfluencer.platform}
+              onChange={(e) => setNewInfluencer({ ...newInfluencer, platform: e.target.value })}
+              className="px-3 py-2 border rounded-md"
+            >
+              <option value="instagram">Instagram</option>
+              <option value="youtube">YouTube</option>
+              <option value="twitter">Twitter</option>
+            </select>
+            <Button onClick={addInfluencer} disabled={!newInfluencer.username.trim()}>
               <Plus className="w-4 h-4 mr-2" />
               Add Tracker
             </Button>
@@ -198,55 +165,98 @@ export function InfluencerTracker() {
         </CardContent>
       </Card>
 
-      {/* Tracked List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Tracked Accounts ({trackedList.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {trackedList.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
-              >
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    {getPlatformIcon(item.platform)}
-                    <span className="font-medium">{item.handle}</span>
-                  </div>
-                  <Badge variant={item.category === "influencer" ? "default" : "secondary"}>{item.category}</Badge>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    {formatNumber(item.followers)} followers • {item.engagementRate}% engagement
+      {/* Tracked Influencers */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {trackedInfluencers.map((influencer) => (
+          <Card key={influencer.id} className="relative">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Avatar>
+                    <AvatarImage src={`/placeholder-user.jpg`} />
+                    <AvatarFallback>{influencer.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="font-semibold">@{influencer.username}</div>
+                    <div className="flex items-center space-x-1 text-sm text-gray-500">
+                      {getPlatformIcon(influencer.platform)}
+                      <span className="capitalize">{influencer.platform}</span>
+                    </div>
                   </div>
                 </div>
-
-                <div className="flex items-center space-x-4">
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    {item.recentPosts} posts • {item.lastUpdate}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeInfluencer(influencer.id)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Stats */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <div className="flex items-center justify-center space-x-1 text-sm text-gray-500 mb-1">
+                    <Users className="w-4 h-4" />
+                    <span>Followers</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    {item.isActive ? (
-                      <Eye className="w-4 h-4 text-green-500" />
-                    ) : (
-                      <EyeOff className="w-4 h-4 text-gray-400" />
-                    )}
-                    <Switch checked={item.isActive} onCheckedChange={() => toggleTracking(item.id)} />
+                  <div className="font-semibold">{influencer.followers}</div>
+                </div>
+                <div className="text-center">
+                  <div className="flex items-center justify-center space-x-1 text-sm text-gray-500 mb-1">
+                    <TrendingUp className="w-4 h-4" />
+                    <span>Engagement</span>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeInfluencer(item.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  <div className="font-semibold">{influencer.engagement}</div>
                 </div>
               </div>
-            ))}
+
+              {/* Sentiment & Status */}
+              <div className="flex items-center justify-between">
+                <Badge className={getSentimentColor(influencer.sentiment)}>{influencer.sentiment} Sentiment</Badge>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-500">{influencer.status === "active" ? "Active" : "Paused"}</span>
+                  <Switch
+                    checked={influencer.status === "active"}
+                    onCheckedChange={() => toggleStatus(influencer.id)}
+                  />
+                </div>
+              </div>
+
+              {/* Last Update */}
+              <div className="text-xs text-gray-400 text-center pt-2 border-t">
+                Last updated: {influencer.lastUpdate}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Summary Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="text-center p-4">
+          <div className="text-2xl font-bold text-blue-600">{trackedInfluencers.length}</div>
+          <div className="text-sm text-gray-500">Total Tracked</div>
+        </Card>
+        <Card className="text-center p-4">
+          <div className="text-2xl font-bold text-green-600">
+            {trackedInfluencers.filter((inf) => inf.status === "active").length}
           </div>
-        </CardContent>
-      </Card>
+          <div className="text-sm text-gray-500">Active Trackers</div>
+        </Card>
+        <Card className="text-center p-4">
+          <div className="text-2xl font-bold text-purple-600">
+            {trackedInfluencers.filter((inf) => inf.sentiment === "positive").length}
+          </div>
+          <div className="text-sm text-gray-500">Positive Sentiment</div>
+        </Card>
+        <Card className="text-center p-4">
+          <div className="text-2xl font-bold text-orange-600">3</div>
+          <div className="text-sm text-gray-500">Platforms</div>
+        </Card>
+      </div>
     </div>
   )
 }

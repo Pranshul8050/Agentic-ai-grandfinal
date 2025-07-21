@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { TrendingUp, Users, Heart, Sparkles } from "lucide-react"
+import { TrendingUp, Users, Heart, Sparkles, AlertTriangle, CheckCircle, XCircle } from "lucide-react"
 
 interface ResultsSectionProps {
   data: {
@@ -25,11 +25,22 @@ export function ResultsSection({ data }: ResultsSectionProps) {
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment.toLowerCase()) {
       case "positive":
-        return "text-green-600 bg-green-50 dark:bg-green-900/20"
+        return "text-green-600"
       case "negative":
-        return "text-red-600 bg-red-50 dark:bg-red-900/20"
+        return "text-red-600"
       default:
-        return "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20"
+        return "text-yellow-600"
+    }
+  }
+
+  const getSentimentIcon = (sentiment: string) => {
+    switch (sentiment.toLowerCase()) {
+      case "positive":
+        return <CheckCircle className="w-8 h-8 text-green-500" />
+      case "negative":
+        return <XCircle className="w-8 h-8 text-red-500" />
+      default:
+        return <AlertTriangle className="w-8 h-8 text-yellow-500" />
     }
   }
 
@@ -37,6 +48,16 @@ export function ResultsSection({ data }: ResultsSectionProps) {
     if (score >= 70) return "text-green-600"
     if (score >= 40) return "text-yellow-600"
     return "text-red-600"
+  }
+
+  const getScoreDescription = (score: number) => {
+    if (score >= 90) return "Exceptional Performance"
+    if (score >= 80) return "Excellent Alignment"
+    if (score >= 70) return "Strong Performance"
+    if (score >= 60) return "Good Potential"
+    if (score >= 40) return "Moderate Impact"
+    if (score >= 25) return "Needs Improvement"
+    return "Poor Alignment"
   }
 
   return (
@@ -48,7 +69,8 @@ export function ResultsSection({ data }: ResultsSectionProps) {
           <h1 className="text-3xl font-bold">Analysis Results</h1>
         </div>
         <p className="text-lg text-gray-600 dark:text-gray-300">
-          {data.influencer} × {data.brand}
+          <span className="font-semibold text-blue-600">@{data.influencer}</span> ×{" "}
+          <span className="font-semibold text-purple-600">{data.brand}</span>
         </p>
       </div>
 
@@ -57,29 +79,30 @@ export function ResultsSection({ data }: ResultsSectionProps) {
         {/* Overall Sentiment */}
         <Card className="text-center">
           <CardHeader>
+            <div className="flex justify-center mb-2">{getSentimentIcon(data.overallSentiment)}</div>
             <CardTitle className="text-lg">Overall Sentiment</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className={`text-4xl font-bold capitalize ${getSentimentColor(data.overallSentiment)}`}>
+              <div className={`text-3xl font-bold capitalize ${getSentimentColor(data.overallSentiment)}`}>
                 {data.overallSentiment}
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Positive</span>
-                  <span>{data.sentimentDistribution.positive}%</span>
+                  <span className="text-green-600">Positive</span>
+                  <span className="font-semibold">{data.sentimentDistribution.positive}%</span>
                 </div>
                 <Progress value={data.sentimentDistribution.positive} className="h-2" />
 
                 <div className="flex justify-between text-sm">
-                  <span>Neutral</span>
-                  <span>{data.sentimentDistribution.neutral}%</span>
+                  <span className="text-yellow-600">Neutral</span>
+                  <span className="font-semibold">{data.sentimentDistribution.neutral}%</span>
                 </div>
                 <Progress value={data.sentimentDistribution.neutral} className="h-2" />
 
                 <div className="flex justify-between text-sm">
-                  <span>Negative</span>
-                  <span>{data.sentimentDistribution.negative}%</span>
+                  <span className="text-red-600">Negative</span>
+                  <span className="font-semibold">{data.sentimentDistribution.negative}%</span>
                 </div>
                 <Progress value={data.sentimentDistribution.negative} className="h-2" />
               </div>
@@ -96,9 +119,8 @@ export function ResultsSection({ data }: ResultsSectionProps) {
             <div className="space-y-4">
               <div className={`text-4xl font-bold ${getScoreColor(data.impactScore)}`}>{data.impactScore}/100</div>
               <Progress value={data.impactScore} className="h-3" />
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {data.impactScore >= 70 ? "Excellent" : data.impactScore >= 40 ? "Good" : "Needs Improvement"} brand
-                alignment
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                {getScoreDescription(data.impactScore)}
               </p>
             </div>
           </CardContent>
@@ -107,7 +129,7 @@ export function ResultsSection({ data }: ResultsSectionProps) {
         {/* Quick Stats */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Quick Stats</CardTitle>
+            <CardTitle className="text-lg">Performance Metrics</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -124,7 +146,9 @@ export function ResultsSection({ data }: ResultsSectionProps) {
                   <Heart className="w-4 h-4 text-red-500" />
                   <span className="text-sm">Avg Engagement</span>
                 </div>
-                <span className="font-semibold">8.2K</span>
+                <span className="font-semibold">
+                  {data.impactScore >= 70 ? "12.5K" : data.impactScore >= 40 ? "8.2K" : "4.1K"}
+                </span>
               </div>
 
               <div className="flex items-center justify-between">
@@ -132,7 +156,11 @@ export function ResultsSection({ data }: ResultsSectionProps) {
                   <TrendingUp className="w-4 h-4 text-green-500" />
                   <span className="text-sm">Trend Direction</span>
                 </div>
-                <span className="font-semibold text-green-600">↗ Rising</span>
+                <span
+                  className={`font-semibold ${data.impactScore >= 60 ? "text-green-600" : data.impactScore >= 40 ? "text-yellow-600" : "text-red-600"}`}
+                >
+                  {data.impactScore >= 60 ? "↗ Rising" : data.impactScore >= 40 ? "→ Stable" : "↘ Declining"}
+                </span>
               </div>
             </div>
           </CardContent>
@@ -142,7 +170,7 @@ export function ResultsSection({ data }: ResultsSectionProps) {
       {/* Summary */}
       <Card>
         <CardHeader>
-          <CardTitle>AI Summary</CardTitle>
+          <CardTitle>AI Analysis Summary</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{data.summary}</p>
@@ -152,7 +180,17 @@ export function ResultsSection({ data }: ResultsSectionProps) {
       {/* Tags */}
       <div className="flex flex-wrap gap-2 justify-center">
         {data.tags.map((tag, index) => (
-          <Badge key={index} variant="secondary" className="px-3 py-1">
+          <Badge
+            key={index}
+            variant="secondary"
+            className={`px-3 py-1 ${
+              data.overallSentiment === "positive"
+                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                : data.overallSentiment === "negative"
+                  ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+            }`}
+          >
             {tag}
           </Badge>
         ))}

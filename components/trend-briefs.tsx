@@ -1,321 +1,246 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar, TrendingUp, TrendingDown, AlertTriangle, Download, Mail, Clock, Sparkles } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Calendar, TrendingUp, Users, Eye, Download, Clock } from "lucide-react"
 
 interface TrendBrief {
   id: string
-  date: string
   title: string
+  date: string
+  status: "completed" | "processing" | "scheduled"
+  insights: number
+  mentions: number
+  sentiment: "positive" | "neutral" | "negative"
   summary: string
   keyTrends: string[]
-  alerts: string[]
-  topPerformers: Array<{
-    handle: string
-    platform: string
-    metric: string
-    change: number
-  }>
-  competitorInsights: string[]
-  recommendations: string[]
-  status: "delivered" | "pending" | "draft"
 }
 
 export function TrendBriefs() {
-  const [selectedPeriod, setSelectedPeriod] = useState("7days")
-  const [briefs] = useState<TrendBrief[]>([
+  const briefs: TrendBrief[] = [
     {
       id: "1",
+      title: "Nike x Tech Influencers - 48h Brief",
       date: "2024-01-15",
-      title: "Weekly Brand Intelligence Brief - Tech Niche",
+      status: "completed",
+      insights: 24,
+      mentions: 156,
+      sentiment: "positive",
       summary:
-        "Significant uptick in AI-related content across tracked influencers. Competitor XYZ launched new campaign with 340% engagement increase.",
-      keyTrends: [
-        "AI and automation content up 45%",
-        "Video format preference increased 23%",
-        "Sustainability messaging trending",
-        "Micro-influencer engagement outperforming macro",
-      ],
-      alerts: ["Competitor ABC gained 15K followers in 48h", "Negative sentiment spike around privacy concerns"],
-      topPerformers: [
-        { handle: "@techguru", platform: "youtube", metric: "engagement", change: 34 },
-        { handle: "@innovator", platform: "instagram", metric: "reach", change: 28 },
-        { handle: "@futuretech", platform: "linkedin", metric: "shares", change: 67 },
-      ],
-      competitorInsights: [
-        "Competitor XYZ focusing heavily on educational content",
-        "Brand ABC shifting to younger demographic targeting",
-        "New player DEF entering market with aggressive pricing",
-      ],
-      recommendations: [
-        "Increase AI-related content production",
-        "Partner with micro-influencers for better ROI",
-        "Address privacy concerns proactively",
-        "Invest in video content creation",
-      ],
-      status: "delivered",
+        "Strong positive sentiment around Nike's tech collaborations. Tech influencers are driving authentic engagement with 34% above-average interaction rates.",
+      keyTrends: ["Tech Integration", "Authentic Reviews", "High Engagement"],
     },
     {
       id: "2",
+      title: "Fashion Week Competitor Analysis",
       date: "2024-01-13",
-      title: "Bi-weekly Competitive Analysis - Fashion Niche",
+      status: "completed",
+      insights: 18,
+      mentions: 89,
+      sentiment: "neutral",
       summary:
-        "Fashion week drove significant engagement. Sustainable fashion messaging dominated conversations with 67% positive sentiment.",
-      keyTrends: [
-        "Sustainable fashion content up 67%",
-        "Behind-the-scenes content performing well",
-        "Collaboration posts increased engagement by 45%",
-        "Stories format gaining traction",
-      ],
-      alerts: [
-        "Influencer @fashionista controversy affecting brand mentions",
-        "Supply chain concerns trending negatively",
-      ],
-      topPerformers: [
-        { handle: "@styleicon", platform: "instagram", metric: "engagement", change: 56 },
-        { handle: "@fashionforward", platform: "youtube", metric: "views", change: 43 },
-        { handle: "@trendsetter", platform: "linkedin", metric: "comments", change: 89 },
-      ],
-      competitorInsights: [
-        "Brand X launching sustainable line next month",
-        "Competitor Y partnering with eco-influencers",
-        "New brand Z targeting Gen-Z with TikTok strategy",
-      ],
-      recommendations: [
-        "Accelerate sustainable product line",
-        "Create behind-the-scenes content series",
-        "Develop influencer collaboration framework",
-        "Monitor supply chain messaging",
-      ],
-      status: "delivered",
+        "Mixed reactions to competitor fashion week campaigns. Opportunity identified in sustainable fashion messaging gap.",
+      keyTrends: ["Sustainability Gap", "Mixed Reactions", "Opportunity Identified"],
     },
     {
       id: "3",
-      date: "2024-01-17",
-      title: "Upcoming Brief - Health & Wellness Trends",
-      summary: "Analysis in progress for health and wellness niche tracking...",
-      keyTrends: [],
-      alerts: [],
-      topPerformers: [],
-      competitorInsights: [],
-      recommendations: [],
-      status: "pending",
+      title: "Fitness Influencer Landscape",
+      date: "2024-01-11",
+      status: "completed",
+      insights: 31,
+      mentions: 203,
+      sentiment: "positive",
+      summary:
+        "Fitness influencers showing exceptional brand alignment. Recommendation: Increase investment in this vertical by 40%.",
+      keyTrends: ["Exceptional Alignment", "Investment Opportunity", "Vertical Growth"],
     },
-  ])
+    {
+      id: "4",
+      title: "Q1 Brand Sentiment Overview",
+      date: "2024-01-16",
+      status: "processing",
+      insights: 0,
+      mentions: 0,
+      sentiment: "neutral",
+      summary: "Processing current quarter sentiment analysis across all tracked influencers and competitors...",
+      keyTrends: ["Processing..."],
+    },
+    {
+      id: "5",
+      title: "Weekend Social Media Pulse",
+      date: "2024-01-17",
+      status: "scheduled",
+      insights: 0,
+      mentions: 0,
+      sentiment: "neutral",
+      summary: "Scheduled analysis of weekend social media activity and engagement patterns.",
+      keyTrends: ["Scheduled Analysis"],
+    },
+  ]
 
-  const deliveredBriefs = briefs.filter((brief) => brief.status === "delivered")
-  const pendingBriefs = briefs.filter((brief) => brief.status === "pending")
+  const getSentimentColor = (sentiment: string) => {
+    switch (sentiment) {
+      case "positive":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+      case "negative":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+      default:
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+    }
+  }
 
-  const getTrendIcon = (change: number) => {
-    if (change > 0) return <TrendingUp className="w-4 h-4 text-green-500" />
-    if (change < 0) return <TrendingDown className="w-4 h-4 text-red-500" />
-    return <TrendingUp className="w-4 h-4 text-gray-400" />
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "completed":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+      case "processing":
+        return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+    }
+  }
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "completed":
+        return <Eye className="w-4 h-4" />
+      case "processing":
+        return <Clock className="w-4 h-4 animate-spin" />
+      default:
+        return <Calendar className="w-4 h-4" />
+    }
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold">AI Trend Briefs</h2>
-          <p className="text-gray-600 dark:text-gray-300">Automated intelligence reports delivered every 48 hours</p>
+          <p className="text-gray-600 dark:text-gray-300">Automated 48-hour intelligence reports for your brand</p>
         </div>
-        <div className="flex space-x-2">
-          <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7days">Last 7 days</SelectItem>
-              <SelectItem value="30days">Last 30 days</SelectItem>
-              <SelectItem value="90days">Last 90 days</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline">
-            <Mail className="w-4 h-4 mr-2" />
-            Email Settings
-          </Button>
-        </div>
+        <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+          {briefs.filter((b) => b.status === "completed").length} Completed
+        </Badge>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Calendar className="w-5 h-5 text-blue-500" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Total Briefs</p>
-                <p className="text-2xl font-bold">{briefs.length}</p>
-              </div>
-            </div>
-          </CardContent>
+        <Card className="text-center p-4">
+          <div className="text-2xl font-bold text-blue-600">{briefs.length}</div>
+          <div className="text-sm text-gray-500">Total Briefs</div>
         </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Clock className="w-5 h-5 text-green-500" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Delivered</p>
-                <p className="text-2xl font-bold">{deliveredBriefs.length}</p>
-              </div>
-            </div>
-          </CardContent>
+        <Card className="text-center p-4">
+          <div className="text-2xl font-bold text-green-600">
+            {briefs.filter((b) => b.status === "completed").length}
+          </div>
+          <div className="text-sm text-gray-500">Completed</div>
         </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <AlertTriangle className="w-5 h-5 text-orange-500" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Pending</p>
-                <p className="text-2xl font-bold">{pendingBriefs.length}</p>
-              </div>
-            </div>
-          </CardContent>
+        <Card className="text-center p-4">
+          <div className="text-2xl font-bold text-orange-600">
+            {briefs.filter((b) => b.status === "processing").length}
+          </div>
+          <div className="text-sm text-gray-500">Processing</div>
         </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Sparkles className="w-5 h-5 text-purple-500" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Next Brief</p>
-                <p className="text-2xl font-bold">18h</p>
-              </div>
-            </div>
-          </CardContent>
+        <Card className="text-center p-4">
+          <div className="text-2xl font-bold text-purple-600">
+            {briefs.reduce((sum, brief) => sum + brief.insights, 0)}
+          </div>
+          <div className="text-sm text-gray-500">Total Insights</div>
         </Card>
       </div>
 
       {/* Brief Cards */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         {briefs.map((brief) => (
-          <Card key={brief.id} className="overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-xl">{brief.title}</CardTitle>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    {new Date(brief.date).toLocaleDateString()} •
-                    <Badge
-                      variant={
-                        brief.status === "delivered" ? "default" : brief.status === "pending" ? "secondary" : "outline"
-                      }
-                      className="ml-2"
-                    >
-                      {brief.status}
-                    </Badge>
-                  </p>
+          <Card key={brief.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div>
+                    <CardTitle className="text-lg">{brief.title}</CardTitle>
+                    <div className="flex items-center space-x-2 text-sm text-gray-500 mt-1">
+                      <Calendar className="w-4 h-4" />
+                      <span>{new Date(brief.date).toLocaleDateString()}</span>
+                    </div>
+                  </div>
                 </div>
-                {brief.status === "delivered" && (
-                  <Button variant="outline" size="sm">
-                    <Download className="w-4 h-4 mr-2" />
-                    Export
-                  </Button>
-                )}
+                <div className="flex items-center space-x-2">
+                  <Badge className={getStatusColor(brief.status)}>
+                    <div className="flex items-center space-x-1">
+                      {getStatusIcon(brief.status)}
+                      <span className="capitalize">{brief.status}</span>
+                    </div>
+                  </Badge>
+                  {brief.status === "completed" && (
+                    <Badge className={getSentimentColor(brief.sentiment)}>{brief.sentiment} Sentiment</Badge>
+                  )}
+                </div>
               </div>
             </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Summary */}
+              <p className="text-gray-700 dark:text-gray-300">{brief.summary}</p>
 
-            {brief.status === "delivered" && (
-              <CardContent className="p-6 space-y-6">
-                {/* Summary */}
-                <div>
-                  <h4 className="font-semibold mb-2">Executive Summary</h4>
-                  <p className="text-gray-700 dark:text-gray-300">{brief.summary}</p>
+              {/* Metrics */}
+              {brief.status === "completed" && (
+                <div className="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center space-x-1">
+                    <TrendingUp className="w-4 h-4" />
+                    <span>{brief.insights} Insights</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Users className="w-4 h-4" />
+                    <span>{brief.mentions} Mentions</span>
+                  </div>
                 </div>
+              )}
 
-                {/* Key Trends */}
-                {brief.keyTrends.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold mb-3">Key Trends</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      {brief.keyTrends.map((trend, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center space-x-2 p-2 bg-green-50 dark:bg-green-900/20 rounded"
-                        >
-                          <TrendingUp className="w-4 h-4 text-green-500" />
-                          <span className="text-sm">{trend}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              {/* Key Trends */}
+              <div className="flex flex-wrap gap-2">
+                {brief.keyTrends.map((trend, index) => (
+                  <Badge key={index} variant="secondary" className="text-xs">
+                    {trend}
+                  </Badge>
+                ))}
+              </div>
 
-                {/* Alerts */}
-                {brief.alerts.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold mb-3">Alerts & Risks</h4>
-                    <div className="space-y-2">
-                      {brief.alerts.map((alert, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center space-x-2 p-2 bg-red-50 dark:bg-red-900/20 rounded"
-                        >
-                          <AlertTriangle className="w-4 h-4 text-red-500" />
-                          <span className="text-sm">{alert}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Top Performers */}
-                {brief.topPerformers.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold mb-3">Top Performers</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {brief.topPerformers.map((performer, index) => (
-                        <div key={index} className="p-3 border border-gray-200 dark:border-gray-700 rounded">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium">{performer.handle}</span>
-                            {getTrendIcon(performer.change)}
-                          </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">
-                            {performer.platform} • {performer.metric}
-                          </p>
-                          <p className="text-sm font-semibold text-green-600">+{performer.change}%</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Recommendations */}
-                {brief.recommendations.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold mb-3">AI Recommendations</h4>
-                    <div className="space-y-2">
-                      {brief.recommendations.map((rec, index) => (
-                        <div
-                          key={index}
-                          className="flex items-start space-x-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded"
-                        >
-                          <Sparkles className="w-4 h-4 text-blue-500 mt-0.5" />
-                          <span className="text-sm">{rec}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            )}
-
-            {brief.status === "pending" && (
-              <CardContent className="p-6">
-                <div className="text-center py-8">
-                  <Clock className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                  <p className="text-gray-600 dark:text-gray-400">Brief generation in progress...</p>
-                  <p className="text-sm text-gray-500 mt-2">Expected completion in 18 hours</p>
+              {/* Actions */}
+              {brief.status === "completed" && (
+                <div className="flex items-center space-x-2 pt-2">
+                  <Button size="sm" variant="outline">
+                    <Eye className="w-4 h-4 mr-2" />
+                    View Full Report
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <Download className="w-4 h-4 mr-2" />
+                    Export PDF
+                  </Button>
                 </div>
-              </CardContent>
-            )}
+              )}
+            </CardContent>
           </Card>
         ))}
       </div>
+
+      {/* Next Brief Schedule */}
+      <Card className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-lg">Next Automated Brief</h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                Comprehensive brand intelligence report scheduled for tomorrow at 9:00 AM
+              </p>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-purple-600">18h 32m</div>
+              <div className="text-sm text-gray-500">Until next brief</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Quote, Sparkles, TrendingUp, Users, Heart } from "lucide-react"
+import { Quote, TrendingUp, TrendingDown, Minus } from "lucide-react"
 
 interface BrandPerceptionProps {
   quote: string
@@ -10,107 +10,106 @@ interface BrandPerceptionProps {
 }
 
 export function BrandPerception({ quote, sentiment }: BrandPerceptionProps) {
-  const getSentimentColor = (sentiment: string) => {
+  const getSentimentIcon = () => {
     switch (sentiment.toLowerCase()) {
       case "positive":
-        return "text-green-600 bg-green-50 dark:bg-green-900/20"
+        return <TrendingUp className="w-6 h-6 text-green-500" />
       case "negative":
-        return "text-red-600 bg-red-50 dark:bg-red-900/20"
+        return <TrendingDown className="w-6 h-6 text-red-500" />
       default:
-        return "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20"
+        return <Minus className="w-6 h-6 text-yellow-500" />
     }
   }
 
-  const insights = [
-    {
-      icon: TrendingUp,
-      label: "Engagement Trend",
-      value: "+23%",
-      description: "Above industry average",
-      color: "text-green-600",
-    },
-    {
-      icon: Users,
-      label: "Audience Reach",
-      value: "2.4M",
-      description: "Potential impressions",
-      color: "text-blue-600",
-    },
-    {
-      icon: Heart,
-      label: "Brand Affinity",
-      value: "High",
-      description: "Strong positive sentiment",
-      color: "text-purple-600",
-    },
-  ]
+  const getSentimentColor = () => {
+    switch (sentiment.toLowerCase()) {
+      case "positive":
+        return "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800"
+      case "negative":
+        return "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
+      default:
+        return "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800"
+    }
+  }
+
+  const getBadgeColor = () => {
+    switch (sentiment.toLowerCase()) {
+      case "positive":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+      case "negative":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+      default:
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+    }
+  }
+
+  const recommendations = {
+    positive: [
+      "Continue current collaboration strategy",
+      "Increase content frequency during peak engagement",
+      "Consider long-term partnership opportunities",
+      "Leverage success for similar influencer outreach",
+    ],
+    negative: [
+      "Review content alignment with brand values",
+      "Consider audience demographic analysis",
+      "Implement content approval process",
+      "Explore alternative influencer partnerships",
+    ],
+    neutral: [
+      "Enhance content creativity and authenticity",
+      "Provide clearer brand guidelines",
+      "Monitor engagement trends closely",
+      "Test different content formats",
+    ],
+  }
+
+  const currentRecommendations = recommendations[sentiment.toLowerCase()] || recommendations.neutral
 
   return (
-    <Card>
+    <Card className={`${getSentimentColor()}`}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Sparkles className="w-5 h-5" />
+          <Quote className="w-5 h-5" />
           <span>AI Brand Perception</span>
+          <div className="flex items-center space-x-2">
+            {getSentimentIcon()}
+            <Badge className={getBadgeColor()}>{sentiment.charAt(0).toUpperCase() + sentiment.slice(1)} Impact</Badge>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* AI Quote */}
-        <div className="relative">
-          <Quote className="absolute -top-2 -left-2 w-8 h-8 text-blue-200 dark:text-blue-800" />
-          <blockquote className="text-lg italic text-gray-700 dark:text-gray-300 pl-6 border-l-4 border-blue-500">
-            {quote}
-          </blockquote>
-          <div className="mt-3 flex justify-end">
-            <Badge className={getSentimentColor(sentiment)}>AI Analysis: {sentiment}</Badge>
-          </div>
-        </div>
-
-        {/* Key Insights */}
-        <div className="space-y-4">
-          <h4 className="font-semibold text-gray-800 dark:text-gray-200">Key Insights</h4>
-          <div className="grid grid-cols-1 gap-4">
-            {insights.map((insight, index) => {
-              const Icon = insight.icon
-              return (
-                <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <div className={`p-2 rounded-full bg-white dark:bg-gray-700 ${insight.color}`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{insight.label}</span>
-                      <span className={`font-bold ${insight.color}`}>{insight.value}</span>
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{insight.description}</p>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
+        <blockquote className="text-lg italic text-gray-700 dark:text-gray-300 border-l-4 border-gray-300 dark:border-gray-600 pl-4">
+          "{quote}"
+        </blockquote>
 
         {/* Recommendations */}
-        <div className="space-y-3">
-          <h4 className="font-semibold text-gray-800 dark:text-gray-200">Recommendations</h4>
-          <div className="space-y-2">
-            <div className="flex items-start space-x-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                Continue collaborating with this influencer for authentic brand advocacy
-              </p>
+        <div>
+          <h4 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">Strategic Recommendations</h4>
+          <ul className="space-y-2">
+            {currentRecommendations.map((rec, index) => (
+              <li key={index} className="flex items-start space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                <span className="text-blue-500 mt-1">•</span>
+                <span>{rec}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Performance Indicators */}
+        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-600">
+              {sentiment === "positive" ? "94%" : sentiment === "negative" ? "34%" : "67%"}
             </div>
-            <div className="flex items-start space-x-2 p-2 bg-green-50 dark:bg-green-900/20 rounded">
-              <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                Leverage their humor and authenticity in future campaigns
-              </p>
+            <div className="text-xs text-gray-500">Brand Alignment</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-purple-600">
+              {sentiment === "positive" ? "8.9" : sentiment === "negative" ? "3.2" : "6.1"}
             </div>
-            <div className="flex items-start space-x-2 p-2 bg-purple-50 dark:bg-purple-900/20 rounded">
-              <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                Consider expanding partnership to include video content
-              </p>
-            </div>
+            <div className="text-xs text-gray-500">Engagement Rate</div>
           </div>
         </div>
       </CardContent>

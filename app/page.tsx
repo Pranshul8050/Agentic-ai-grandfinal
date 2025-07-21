@@ -13,6 +13,184 @@ import { TrendBriefs } from "@/components/trend-briefs"
 import { CompetitorAnalysis } from "@/components/competitor-analysis"
 import { Footer } from "@/components/footer"
 
+// Demo data variations for different influencer-brand combinations
+const getDemoData = (influencer: string, brand: string) => {
+  const combinations = {
+    // Tech influencers
+    techguru: {
+      nike: {
+        sentiment: "positive",
+        score: 85,
+        summary: `${influencer} creates authentic tech-lifestyle content that perfectly aligns with Nike's innovation narrative. Their audience engagement is 34% above industry average, with strong conversion rates on sponsored content.`,
+        tags: ["Tech Innovation", "Lifestyle Integration", "High Conversion"],
+        distribution: { positive: 78, neutral: 18, negative: 4 },
+      },
+      apple: {
+        sentiment: "positive",
+        score: 92,
+        summary: `${influencer} demonstrates exceptional product knowledge and creates premium content that resonates with Apple's target demographic. Engagement quality is outstanding with minimal negative feedback.`,
+        tags: ["Premium Content", "Product Expert", "Brand Aligned"],
+        distribution: { positive: 85, neutral: 12, negative: 3 },
+      },
+      samsung: {
+        sentiment: "neutral",
+        score: 68,
+        summary: `${influencer} provides balanced tech reviews but lacks emotional connection with Samsung products. Content is informative but doesn't drive strong brand advocacy among followers.`,
+        tags: ["Informative", "Balanced Reviews", "Moderate Impact"],
+        distribution: { positive: 55, neutral: 35, negative: 10 },
+      },
+    },
+    fashionista: {
+      nike: {
+        sentiment: "positive",
+        score: 79,
+        summary: `${influencer} seamlessly integrates Nike products into fashion-forward content, appealing to style-conscious consumers. Strong visual storytelling drives engagement and brand desire.`,
+        tags: ["Fashion Forward", "Visual Storytelling", "Style Influence"],
+        distribution: { positive: 72, neutral: 22, negative: 6 },
+      },
+      zara: {
+        sentiment: "positive",
+        score: 88,
+        summary: `${influencer} perfectly embodies Zara's fast-fashion aesthetic with trend-setting content that drives immediate purchase intent. Audience demographics align perfectly with brand targets.`,
+        tags: ["Trend Setter", "Purchase Driver", "Perfect Alignment"],
+        distribution: { positive: 81, neutral: 15, negative: 4 },
+      },
+      gucci: {
+        sentiment: "neutral",
+        score: 45,
+        summary: `${influencer} struggles to authentically represent Gucci's luxury positioning. Content feels forced and doesn't resonate with their primarily budget-conscious audience.`,
+        tags: ["Misaligned Audience", "Authenticity Issues", "Low Impact"],
+        distribution: { positive: 35, neutral: 40, negative: 25 },
+      },
+    },
+    fitnessking: {
+      nike: {
+        sentiment: "positive",
+        score: 94,
+        summary: `${influencer} embodies Nike's 'Just Do It' spirit with motivational fitness content that drives exceptional engagement. Perfect brand-influencer synergy with authentic product integration.`,
+        tags: ["Motivational", "Authentic Integration", "Perfect Synergy"],
+        distribution: { positive: 89, neutral: 9, negative: 2 },
+      },
+      adidas: {
+        sentiment: "positive",
+        score: 76,
+        summary: `${influencer} creates solid fitness content featuring Adidas products, though slightly less authentic than with other brands. Good engagement but room for improvement in storytelling.`,
+        tags: ["Solid Performance", "Good Engagement", "Room for Growth"],
+        distribution: { positive: 68, neutral: 26, negative: 6 },
+      },
+      mcdonalds: {
+        sentiment: "negative",
+        score: 23,
+        summary: `${influencer} faces significant backlash when promoting McDonald's due to conflicting brand values. Fitness audience rejects fast-food partnerships, causing reputation damage.`,
+        tags: ["Brand Conflict", "Audience Backlash", "Reputation Risk"],
+        distribution: { positive: 15, neutral: 25, negative: 60 },
+      },
+    },
+  }
+
+  // Default fallback data
+  const defaultData = {
+    sentiment: "neutral",
+    score: 65,
+    summary: `${influencer} shows moderate engagement with ${brand} content. The partnership has potential but needs strategic refinement to maximize impact and audience resonance.`,
+    tags: ["Moderate Impact", "Growth Potential", "Needs Strategy"],
+    distribution: { positive: 50, neutral: 35, negative: 15 },
+  }
+
+  const influencerData = combinations[influencer.toLowerCase()]
+  const brandData = influencerData?.[brand.toLowerCase()] || defaultData
+
+  return {
+    influencer,
+    brand,
+    overallSentiment: brandData.sentiment,
+    impactScore: brandData.score,
+    summary: brandData.summary,
+    tags: brandData.tags,
+    sentimentDistribution: brandData.distribution,
+    topPosts: generatePostsForCombination(influencer, brand, brandData.sentiment),
+    aiQuote: generateAIQuote(influencer, brand, brandData.sentiment),
+    engagementTrend: generateEngagementTrend(brandData.score),
+  }
+}
+
+const generatePostsForCombination = (influencer: string, brand: string, sentiment: string) => {
+  const posts = [
+    {
+      id: 1,
+      image: "/placeholder.svg?height=300&width=400&text=Post+1",
+      caption: `Just tried the new @${brand} collection and I'm ${sentiment === "positive" ? "obsessed" : sentiment === "negative" ? "not impressed" : "curious about it"}! ${sentiment === "positive" ? "😍 The quality is amazing" : sentiment === "negative" ? "😕 Expected more" : "🤔 Mixed feelings"} #${brand.toLowerCase()}`,
+      engagement: {
+        likes: sentiment === "positive" ? 15600 : sentiment === "negative" ? 3200 : 8900,
+        comments: sentiment === "positive" ? 450 : sentiment === "negative" ? 180 : 320,
+        shares: sentiment === "positive" ? 120 : sentiment === "negative" ? 25 : 67,
+      },
+      sentiment: sentiment,
+      alignment:
+        sentiment === "positive"
+          ? "Promoting Brand Well"
+          : sentiment === "negative"
+            ? "Brand Misalignment"
+            : "Needs Re-alignment",
+    },
+    {
+      id: 2,
+      image: "/placeholder.svg?height=300&width=400&text=Post+2",
+      caption: `My honest review of ${brand} - ${sentiment === "positive" ? "totally worth the hype!" : sentiment === "negative" ? "not living up to expectations" : "has potential but..."} ${sentiment === "positive" ? "Link in bio 🛍️" : sentiment === "negative" ? "Swipe for details 👆" : "What do you think? 💭"} #review #${brand.toLowerCase()}`,
+      engagement: {
+        likes: sentiment === "positive" ? 12300 : sentiment === "negative" ? 2800 : 7100,
+        comments: sentiment === "positive" ? 380 : sentiment === "negative" ? 220 : 290,
+        shares: sentiment === "positive" ? 95 : sentiment === "negative" ? 15 : 45,
+      },
+      sentiment: sentiment,
+      alignment:
+        sentiment === "positive"
+          ? "Promoting Brand Well"
+          : sentiment === "negative"
+            ? "Brand Misalignment"
+            : "Needs Re-alignment",
+    },
+    {
+      id: 3,
+      image: "/placeholder.svg?height=300&width=400&text=Post+3",
+      caption: `${sentiment === "positive" ? "Unboxing my" : sentiment === "negative" ? "Trying out" : "Testing"} ${brand} ${sentiment === "positive" ? "haul! You guys asked for it 📦✨" : sentiment === "negative" ? "products... let's see 📦😬" : "collection - first impressions 📦🤷‍♂️"} #unboxing #${brand.toLowerCase()}`,
+      engagement: {
+        likes: sentiment === "positive" ? 18900 : sentiment === "negative" ? 4100 : 9800,
+        comments: sentiment === "positive" ? 520 : sentiment === "negative" ? 340 : 410,
+        shares: sentiment === "positive" ? 150 : sentiment === "negative" ? 35 : 78,
+      },
+      sentiment: sentiment,
+      alignment:
+        sentiment === "positive"
+          ? "Promoting Brand Well"
+          : sentiment === "negative"
+            ? "Brand Misalignment"
+            : "Needs Re-alignment",
+    },
+  ]
+
+  return posts
+}
+
+const generateAIQuote = (influencer: string, brand: string, sentiment: string) => {
+  const quotes = {
+    positive: `${influencer} demonstrates authentic passion for ${brand}, creating compelling content that drives genuine audience engagement and brand loyalty.`,
+    negative: `${influencer}'s content with ${brand} feels forced and misaligned, potentially damaging both personal brand credibility and ${brand}'s reputation.`,
+    neutral: `${influencer} maintains professional standards with ${brand} content but lacks the emotional connection needed for maximum impact.`,
+  }
+  return quotes[sentiment] || quotes.neutral
+}
+
+const generateEngagementTrend = (score: number) => {
+  const baseEngagement = score * 200 // Scale score to engagement numbers
+  const variance = 0.3
+
+  return Array.from({ length: 7 }, (_, i) => ({
+    date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    engagement: Math.floor(baseEngagement * (1 + (Math.random() - 0.5) * variance)),
+  }))
+}
+
 export default function Home() {
   const [analysisData, setAnalysisData] = useState(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -23,66 +201,7 @@ export default function Home() {
 
     // Simulate realistic API call with proper delay
     setTimeout(() => {
-      const mockData = {
-        influencer,
-        brand,
-        overallSentiment: "positive",
-        impactScore: 78,
-        summary: `${influencer} is positively impacting ${brand} with authentic content that resonates with their target audience. The influencer's engagement rates are 23% above industry average.`,
-        tags: ["Boosting Awareness", "High Engagement", "Brand Aligned"],
-        sentimentDistribution: {
-          positive: 65,
-          neutral: 25,
-          negative: 10,
-        },
-        topPosts: [
-          {
-            id: 1,
-            image: "/placeholder.svg?height=300&width=400&text=Post+1",
-            caption:
-              "Just tried the new @" +
-              brand +
-              " collection and I'm obsessed! 😍 The quality is amazing and the style is perfect for my aesthetic. Link in bio for 20% off! #sponsored #" +
-              brand.toLowerCase(),
-            engagement: { likes: 12500, comments: 340, shares: 89 },
-            sentiment: "positive",
-            alignment: "Promoting Brand Well",
-          },
-          {
-            id: 2,
-            image: "/placeholder.svg?height=300&width=400&text=Post+2",
-            caption:
-              "My honest review of " +
-              brand +
-              " - worth the hype? After using their products for 2 weeks, here's what I think... (swipe for details)",
-            engagement: { likes: 8900, comments: 567, shares: 123 },
-            sentiment: "positive",
-            alignment: "Promoting Brand Well",
-          },
-          {
-            id: 3,
-            image: "/placeholder.svg?height=300&width=400&text=Post+3",
-            caption:
-              "Unboxing my " +
-              brand +
-              " haul! You guys asked for it so here it is 📦✨ The packaging alone is worth it! What should I try first?",
-            engagement: { likes: 15600, comments: 234, shares: 67 },
-            sentiment: "neutral",
-            alignment: "Needs Re-alignment",
-          },
-        ],
-        aiQuote: `${influencer} uses humor and authenticity that resonates with Gen Z, reinforcing ${brand}'s coolness factor and driving genuine engagement.`,
-        engagementTrend: [
-          { date: "2024-01-01", engagement: 8500 },
-          { date: "2024-01-02", engagement: 12300 },
-          { date: "2024-01-03", engagement: 15600 },
-          { date: "2024-01-04", engagement: 11200 },
-          { date: "2024-01-05", engagement: 18900 },
-          { date: "2024-01-06", engagement: 14500 },
-          { date: "2024-01-07", engagement: 16800 },
-        ],
-      }
-
+      const mockData = getDemoData(influencer, brand)
       setAnalysisData(mockData)
       setActiveTab("analyze")
       setIsAnalyzing(false)
