@@ -63,12 +63,16 @@ export function HeroSection({ onAnalyze, isAnalyzing, onTabChange }: HeroSection
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 -mt-16">
         <div className="max-w-4xl w-full text-center space-y-8">
-          {/* Hero Title */}
-          <div className="space-y-4">
-            <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              AI-Powered Brand Intelligence
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+         <div>
+  <h2 className="text-5xl md:text-6xl font-bold leading-snug mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+    AI-Powered Brand Intelligence
+  </h2>
+  <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mt-4">
+    Track influencers, analyze competitors, and get automated trend briefs every 48 hours. Real-time social
+    media intelligence for modern brands.
+  </p>
+</div>
+
               Track influencers, analyze competitors, and get automated trend briefs every 48 hours. Real-time social
               media intelligence for modern brands.
             </p>
