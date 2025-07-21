@@ -44,7 +44,7 @@ export function HeroSection({ onAnalyze, isAnalyzing, onTabChange }: HeroSection
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="flex justify-between items-center p-6">
+      <header className="flex justify-between items-center flex-wrap gap-y-4 p-6">
         <div className="flex items-center space-x-2">
           <Sparkles className="w-8 h-8 text-blue-600" />
           <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -61,18 +61,14 @@ export function HeroSection({ onAnalyze, isAnalyzing, onTabChange }: HeroSection
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 -mt-16">
-        <div className="max-w-4xl w-full text-center space-y-8">
-        <div className="space-y-4">
-  <h2 className="text-5xl md:text-6xl font-bold leading-snug mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-    AI-Powered Brand Intelligence
-  </h2>
-  <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mt-2">
-    Track influencers, analyze competitors, and get automated trend briefs every 48 hours. Real-time social
-    media intelligence for modern brands.
-  </p>
-</div>
-
+      <main className="flex-1 flex flex-col items-center justify-start px-6 mt-4 md:mt-12 gap-y-8">
+        <div className="max-w-4xl w-full text-center space-y-8 px-4 sm:px-6">
+          {/* Hero Title */}
+          <div className="space-y-4">
+            <h2 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              AI-Powered Brand Intelligence
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Track influencers, analyze competitors, and get automated trend briefs every 48 hours. Real-time social
               media intelligence for modern brands.
             </p>
